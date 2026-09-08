@@ -8,6 +8,25 @@ from werkzeug.utils import secure_filename
 
 
 bp = Blueprint("main", __name__)
+
+from flask import request
+
+@bp.app_errorhandler(413)
+def handle_file_too_large(error):
+    if request.path.startswith("/api/"):
+        return jsonify({
+            "error": "Uploaded video is too large for this deployment."
+        }), 413
+    return error
+
+@bp.app_errorhandler(500)
+def handle_server_error(error):
+    if request.path.startswith("/api/"):
+        return jsonify({
+            "error": "Internal server error. Check the Render logs."
+        }), 500
+    return error
+
 ALLOWED = {".mp4", ".mkv", ".mov", ".webm", ".avi", ".m4v"}
 
 def job_file(job_id):
