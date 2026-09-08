@@ -1,0 +1,14 @@
+venv/
+__pycache__/
+*.pyc
+.env
+
+storage/uploads/*
+storage/jobs/*
+storage/output/*
+storage/work/*
+
+!storage/uploads/.gitkeep
+!storage/jobs/.gitkeep
+!storage/output/.gitkeep
+!storage/work/.gitkeep

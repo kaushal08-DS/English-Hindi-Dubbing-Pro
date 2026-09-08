@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DubAI Pro — English to Hindi</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<main class="wrap">
+
+  <header class="hero">
+    <div class="pill">DUBAI PRO · V2</div>
+    <h1>English → Hindi<br><span>AI Episode Dubbing</span></h1>
+    <p>
+      Speaker-aware dubbing with WhisperX alignment, speaker diarization,
+      automatic male/female voice profiling, Hindi translation and
+      timing-aware neural voice generation.
+    </p>
+  </header>
+
+  <section class="panel">
+    <form id="uploadForm">
+
+      <label class="drop" id="drop">
+        <input id="video" name="video" type="file" accept="video/*" hidden>
+        <div class="icon">＋</div>
+        <strong id="title">Drop an English video here</strong>
+        <span id="meta">MP4 · MKV · MOV · WebM · AVI · M4V</span>
+      </label>
+
+      <div class="grid">
+        <div>
+          <label>WhisperX model</label>
+          <select name="whisper_model">
+            <option value="base">Base</option>
+            <option value="small" selected>Small — recommended</option>
+            <option value="medium">Medium — higher accuracy</option>
+            <option value="large-v3">Large-v3 — best, slowest</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Minimum speakers</label>
+          <input name="min_speakers" type="number" min="1" max="20" value="2">
+        </div>
+
+        <div>
+          <label>Maximum speakers</label>
+          <input name="max_speakers" type="number" min="1" max="20" value="6">
+        </div>
+      </div>
+
+      <button id="start">Start AI dubbing</button>
+    </form>
+  </section>
+
+  <section class="panel hidden" id="progressPanel">
+    <div class="row">
+      <div>
+        <div class="small" id="stage">Queued</div>
+        <h2 id="message">Starting…</h2>
+      </div>
+      <strong id="pct">0%</strong>
+    </div>
+    <div class="progress"><div id="bar"></div></div>
+    <div id="result"></div>
+  </section>
+
+  <section class="features">
+    <div><b>01</b><span>WhisperX + aligned timestamps</span></div>
+    <div><b>02</b><span>Speaker diarization</span></div>
+    <div><b>03</b><span>Male/female voice profiling</span></div>
+    <div><b>04</b><span>Hindi translation + TTS timing</span></div>
+  </section>
+
+  <p class="note">
+    Recommended workflow: test a 1–3 minute clip first, then move to full
+    episodes after the pipeline is stable on your hardware.
+  </p>
+</main>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
