@@ -6,7 +6,6 @@ from pathlib import Path
 from flask import Blueprint, current_app, jsonify, render_template, request, send_file
 from werkzeug.utils import secure_filename
 
-from .services.dubbing import run_dubbing
 
 bp = Blueprint("main", __name__)
 ALLOWED = {".mp4", ".mkv", ".mov", ".webm", ".avi", ".m4v"}
@@ -73,9 +72,21 @@ def create_job():
     }
     save_job(job)
 
-    app_obj = current_app._get_current_object()
+    def start_job(app_obj, job_id, upload_path, whisper_model, min_speakers, max_speakers):
+        from .services.dubbing import run_dubbing
+
+        run_dubbing(
+            app_obj,
+            job_id,
+            upload_path,
+            whisper_model,
+            min_speakers,
+            max_speakers,
+        )
+
+
     thread = threading.Thread(
-        target=run_dubbing,
+        target=start_job,
         args=(
             app_obj,
             job_id,
