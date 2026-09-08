@@ -7,6 +7,7 @@ st.set_page_config(
 )
 
 st.title("🎬 English → Hindi AI Dubbing")
+
 st.write(
     "Upload an English video and create a Hindi dubbed version."
 )
@@ -18,9 +19,4 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file:
     st.success(f"Uploaded: {uploaded_file.name}")
-
     st.video(uploaded_file)
-
-    st.info(
-        "Upload is working. The AI processing pipeline will be connected next."
-    )
