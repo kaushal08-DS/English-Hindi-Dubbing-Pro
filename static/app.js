@@ -41,11 +41,11 @@ drop.addEventListener("drop", e => {
   }
 });
 
-form.addEventListener("submit", async e => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   if (!input.files.length) {
-    alert("Choose an English video first.");
+    alert("Please select an English video first.");
     return;
   }
 
@@ -54,19 +54,45 @@ form.addEventListener("submit", async e => {
   progressPanel.classList.remove("hidden");
   result.innerHTML = "";
 
+  const data = new FormData(form);
+
   try {
-    const fd = new FormData(form);
-    const r = await fetch("/api/jobs", { method: "POST", body: fd });
-    const data = await r.json();
+    const response = await fetch("/api/jobs", {
+      method: "POST",
+      body: data
+    });
 
-    if (!r.ok) throw new Error(data.error || "Upload failed.");
+    const contentType = response.headers.get("content-type") || "";
+    const responseText = await response.text();
 
-    poll(data.job_id);
+    if (!response.ok) {
+      throw new Error(
+        `Server returned ${response.status}: ${responseText.slice(0, 500)}`
+      );
+    }
+
+    if (!contentType.includes("application/json")) {
+      throw new Error(
+        `Expected JSON but received ${contentType || "unknown content type"}: ${responseText.slice(0, 500)}`
+      );
+    }
+
+    const payload = JSON.parse(responseText);
+
+    if (!payload.job_id) {
+      throw new Error("Server did not return a job ID.");
+    }
+
+    poll(payload.job_id);
+
   } catch (err) {
     start.disabled = false;
-    start.textContent = "Start AI dubbing";
-    stage.textContent = "Error";
+    start.textContent = "Try again";
+
+    stage.textContent = "Upload error";
     message.textContent = err.message;
+
+    console.error("Upload error:", err);
   }
 });
 
